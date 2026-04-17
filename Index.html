@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lead Generation Proposal — Outright Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0D0D0D;
+    --white: #FAFAF8;
+    --nude-light: #F0E6D8;
+    --nude-mid: #D4B896;
+    --nude-dark: #B89370;
+    --nude-deep: #8C6E52;
+    --gray-100: #F5F2EE;
+    --gray-200: #EAE4DC;
+    --gray-400: #C4B8A8;
+    --gray-600: #7A6E62;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--black);
+    overflow: hidden;
+    font-family: 'Jost', sans-serif;
+  }
+
+  .deck {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(60px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(0);
+  }
+
+  .slide.exit {
+    opacity: 0;
+    transform: translateX(-60px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+
+  /* NAV */
+  .nav-bar {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    z-index: 100;
+    background: rgba(13,13,13,0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(212,184,150,0.25);
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+  }
+
+  .nav-btn {
+    width: 32px; height: 32px;
+    border: none; background: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--nude-mid);
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+  .nav-btn:hover { background: rgba(212,184,150,0.15); }
+  .nav-btn svg { width: 16px; height: 16px; }
+
+  .slide-counter {
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--gray-400);
+    letter-spacing: 0.1em;
+    min-width: 52px;
+    text-align: center;
+  }
+
+  .dots {
+    display: flex; gap: 6px; align-items: center;
+  }
+  .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(212,184,150,0.3);
+    transition: background 0.3s, width 0.3s;
+    cursor: pointer;
+  }
+  .dot.active {
+    background: var(--nude-mid);
+    width: 18px;
+    border-radius: 3px;
+  }
+
+  /* ─── SLIDE LAYOUTS ─── */
+
+  /* COVER */
+  .s-cover {
+    background: var(--white);
+    justify-content: center;
+    padding: 5vw 8vw;
+  }
+  .cover-rule {
+    width: 60px; height: 1px;
+    background: var(--nude-dark);
+    margin-bottom: 2.5rem;
+  }
+  .cover-eyebrow {
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--nude-deep);
+    margin-bottom: 1.2rem;
+  }
+  .cover-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--black);
+    margin-bottom: 2.5rem;
+  }
+  .cover-title em {
+    font-style: italic;
+    color: var(--nude-deep);
+  }
+  .cover-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .cover-meta-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+  .meta-label {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    min-width: 80px;
+  }
+  .meta-value {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--gray-600);
+  }
+  .cover-badge {
+    position: absolute;
+    top: 5vw; right: 8vw;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem;
+  }
+  .badge-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--nude-dark);
+  }
+
+  /* DARK SLIDE BASE */
+  .s-dark {
+    background: var(--black);
+    padding: 4vw 8vw;
+    justify-content: center;
+  }
+  .s-light {
+    background: var(--white);
+    padding: 4vw 8vw;
+    justify-content: center;
+  }
+  .s-nude {
+    background: var(--nude-light);
+    padding: 4vw 8vw;
+    justify-content: center;
+  }
+
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--nude-mid);
+    margin-bottom: 1.8rem;
+  }
+  .section-tag .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 300;
+  }
+  .section-tag-dark {
+    color: var(--nude-deep);
+  }
+  .section-tag-dark .num { color: var(--nude-dark); }
+
+  .slide-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4.5vw, 3.8rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 2.5rem;
+  }
+  .slide-heading.light { color: var(--white); }
+  .slide-heading.dark { color: var(--black); }
+  .slide-heading em { font-style: italic; color: var(--nude-mid); }
+  .slide-heading.dark em { color: var(--nude-deep); }
+
+  /* TABLE COMPONENT */
+  .info-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .info-table tr {
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .info-table.light-table tr {
+    border-bottom: 1px solid rgba(13,13,13,0.08);
+  }
+  .info-table td {
+    padding: 0.7rem 0;
+    font-size: 13px;
+  }
+  .info-table td:first-child {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--nude-mid);
+    width: 28%;
+    font-weight: 400;
+    padding-right: 1.5rem;
+  }
+  .info-table.light-table td:first-child { color: var(--nude-deep); }
+  .info-table td:last-child { color: rgba(250,250,248,0.85); font-weight: 300; }
+  .info-table.light-table td:last-child { color: var(--black); }
+
+  /* HIGHLIGHT STAT */
+  .stat-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .stat-pill {
+    background: rgba(212,184,150,0.12);
+    border: 1px solid rgba(212,184,150,0.25);
+    border-radius: 4px;
+    padding: 0.55rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 110px;
+  }
+  .stat-pill-n {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--nude-mid);
+    line-height: 1;
+  }
+  .stat-pill-l {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(250,250,248,0.45);
+  }
+
+  /* ICP COLUMNS */
+  .icp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .icp-card {
+    border-radius: 4px;
+    padding: 1.5rem;
+  }
+  .icp-card.primary {
+    background: rgba(212,184,150,0.1);
+    border: 1px solid rgba(212,184,150,0.3);
+  }
+  .icp-card.secondary {
+    background: rgba(250,250,248,0.04);
+    border: 1px solid rgba(250,250,248,0.1);
+  }
+  .icp-badge {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    margin-bottom: 0.9rem;
+    font-weight: 400;
+  }
+  .icp-badge.p { background: var(--nude-dark); color: var(--white); }
+  .icp-badge.s { background: rgba(250,250,248,0.1); color: rgba(250,250,248,0.6); }
+  .icp-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+  .icp-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .icp-list li {
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.7);
+    padding-left: 1rem;
+    position: relative;
+    line-height: 1.4;
+  }
+  .icp-list li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0.4em;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--nude-mid);
+  }
+
+  /* APPROACH TABS */
+  .approach-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(212,184,150,0.2);
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem 1.2rem 0.7rem;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(250,250,248,0.35);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-btn.active {
+    color: var(--nude-mid);
+    border-bottom-color: var(--nude-mid);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .channel-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .channel-card {
+    background: rgba(250,250,248,0.04);
+    border: 1px solid rgba(250,250,248,0.08);
+    border-radius: 4px;
+    padding: 1.1rem;
+  }
+  .channel-icon {
+    font-size: 14px;
+    margin-bottom: 0.4rem;
+    color: var(--nude-mid);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+  }
+  .channel-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .channel-desc {
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.55);
+    line-height: 1.45;
+  }
+
+  .tools-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .tool-tag {
+    background: rgba(212,184,150,0.1);
+    border: 1px solid rgba(212,184,150,0.2);
+    border-radius: 3px;
+    padding: 0.35rem 0.75rem;
+    font-size: 11px;
+    color: var(--nude-mid);
+    font-weight: 400;
+  }
+
+  .f2f-block {
+    background: rgba(212,184,150,0.08);
+    border: 1px solid rgba(212,184,150,0.2);
+    border-radius: 4px;
+    padding: 1.2rem 1.5rem;
+  }
+  .f2f-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--nude-mid);
+    margin-bottom: 0.8rem;
+  }
+  .f2f-points {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .f2f-point {
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+  }
+  .f2f-label {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--nude-dark);
+    min-width: 90px;
+    padding-top: 1px;
+  }
+  .f2f-text {
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.65);
+    line-height: 1.45;
+  }
+
+  /* PRICING */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .pricing-panel {
+    border-radius: 4px;
+    padding: 1.5rem;
+  }
+  .pricing-panel.a {
+    background: var(--black);
+    border: 1px solid var(--nude-mid);
+  }
+  .pricing-panel.b {
+    background: rgba(13,13,13,0.06);
+    border: 1px solid rgba(13,13,13,0.15);
+  }
+  .pricing-option-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 400;
+    margin-bottom: 0.4rem;
+  }
+  .pricing-option-label.a { color: var(--nude-mid); }
+  .pricing-option-label.b { color: var(--nude-deep); }
+  .pricing-option-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    margin-bottom: 1.2rem;
+    line-height: 1.2;
+  }
+  .pricing-option-title.a { color: var(--white); }
+  .pricing-option-title.b { color: var(--black); }
+
+  .price-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-bottom: 1rem;
+  }
+  .price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.8rem;
+    border-radius: 3px;
+    transition: background 0.2s;
+    cursor: default;
+  }
+  .price-row.a { background: rgba(250,250,248,0.05); }
+  .price-row.a:hover { background: rgba(212,184,150,0.1); }
+  .price-row.b { background: rgba(13,13,13,0.05); }
+  .price-row.b:hover { background: rgba(13,13,13,0.1); }
+  .price-row.featured.a { background: rgba(212,184,150,0.12); border: 1px solid rgba(212,184,150,0.25); }
+  .price-row.featured.b { background: rgba(140,110,82,0.1); border: 1px solid rgba(140,110,82,0.2); }
+  .price-row-label { font-size: 12px; font-weight: 300; }
+  .price-row-label.a { color: rgba(250,250,248,0.75); }
+  .price-row-label.b { color: var(--gray-600); }
+  .price-row-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+  }
+  .price-row-amount.a { color: var(--nude-mid); }
+  .price-row-amount.b { color: var(--nude-deep); }
+  .price-row-note { font-size: 10px; font-weight: 300; color: rgba(250,250,248,0.4); margin-top: 1px; }
+  .price-row-note.b { color: var(--gray-400); }
+
+  .guarantee-strip {
+    grid-column: 1 / -1;
+    background: rgba(212,184,150,0.08);
+    border: 1px solid rgba(212,184,150,0.2);
+    border-radius: 4px;
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-top: -0.5rem;
+  }
+  .guarantee-icon {
+    width: 24px; height: 24px;
+    background: rgba(212,184,150,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .guarantee-icon svg { width: 12px; height: 12px; stroke: var(--nude-mid); }
+  .guarantee-text { font-size: 12px; font-weight: 300; color: rgba(250,250,248,0.6); line-height: 1.5; }
+  .guarantee-text strong { font-weight: 400; color: var(--nude-mid); }
+
+  /* TIMELINE */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    padding-left: 2.5rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 14px;
+    bottom: 14px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--nude-mid), rgba(212,184,150,0.1));
+  }
+  .timeline-item {
+    position: relative;
+    padding: 0 0 1.2rem 0;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -2.5rem;
+    top: 4px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid var(--nude-mid);
+    background: var(--black);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.3s;
+  }
+  .timeline-dot.filled { background: var(--nude-mid); }
+  .timeline-day {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--nude-dark);
+    margin-bottom: 0.25rem;
+  }
+  .timeline-event {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+  }
+  .timeline-detail {
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.5);
+    line-height: 1.45;
+  }
+
+  .timeline-goals {
+    background: rgba(212,184,150,0.08);
+    border: 1px solid rgba(212,184,150,0.18);
+    border-radius: 4px;
+    padding: 1rem 1.2rem;
+    margin-top: 0.5rem;
+    margin-left: -2.5rem;
+  }
+  .timeline-goals-title {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--nude-mid);
+    margin-bottom: 0.5rem;
+  }
+  .goal-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(212,184,150,0.1);
+  }
+  .goal-row:last-child { border-bottom: none; }
+  .goal-label { font-size: 12px; font-weight: 300; color: rgba(250,250,248,0.6); }
+  .goal-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--nude-mid);
+  }
+
+  /* WHY ME */
+  .reasons-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  .reason-card {
+    background: rgba(250,250,248,0.03);
+    border: 1px solid rgba(250,250,248,0.08);
+    border-radius: 4px;
+    padding: 1.1rem;
+    transition: background 0.2s, border-color 0.2s;
+    cursor: default;
+  }
+  .reason-card:hover {
+    background: rgba(212,184,150,0.07);
+    border-color: rgba(212,184,150,0.2);
+  }
+  .reason-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(212,184,150,0.3);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .reason-text {
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.65);
+    line-height: 1.5;
+  }
+  .reason-text strong { color: var(--white); font-weight: 400; }
+
+  /* NEXT STEPS */
+  .steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+  }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(212,184,150,0.3);
+    line-height: 1;
+    min-width: 42px;
+  }
+  .step-content {}
+  .step-title {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 0.2rem;
+  }
+  .step-detail {
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(250,250,248,0.5);
+  }
+
+  .deadline-bar {
+    background: rgba(212,184,150,0.08);
+    border: 1px solid rgba(212,184,150,0.2);
+    border-radius: 4px;
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .deadline-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--nude-dark);
+  }
+  .deadline-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--nude-mid);
+  }
+
+  /* RESPONSIVE UTILITY */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 4vw;
+    align-items: start;
+  }
+  .two-col-eq {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4vw;
+    align-items: start;
+  }
+
+  /* SMALL OVERRIDES FOR COMPACT CONTENT */
+  .content-compact { margin-top: -0.5rem; }
+
+  @media (max-width: 700px) {
+    .icp-grid, .pricing-grid, .reasons-grid, .two-col, .two-col-eq, .channel-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- ──────────────────────────────────── -->
+  <!-- SLIDE 1: COVER                       -->
+  <!-- ──────────────────────────────────── -->
+  <div class="slide s-cover active" data-slide="0">
+    <div class="cover-badge">
+      <span class="badge-line">April 2026</span>
+      <span class="badge-line">Prepared exclusively for</span>
+    </div>
+    <div class="cover-rule"></div>
+    <p class="cover-eyebrow">Lead Generation Proposal</p>
+    <h1 class="cover-title">
+      Outright<br><em>Solutions</em>
+    </h1>
+    <div class="cover-meta">
+      <div class="cover-meta-row">
+        <span class="meta-label">Prepared for</span>
+        <span class="meta-value">Pavitra Mundhra · Outright Solutions Pvt Ltd / Crescentek</span>
+      </div>
+      <div class="cover-meta-row">
+        <span class="meta-label">Location</span>
+        <span class="meta-value">Kolkata, India · Serving UK, EU, US, Canada, Dubai, APAC, Africa</span>
+      </div>
+      <div class="cover-meta-row">
+        <span class="meta-label">Prepared by</span>
+        <span class="meta-value">Ijeoma Nneji · Lead Generation Specialist</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────── -->
+  <!-- SLIDE 2: UNDERSTANDING YOUR BUSINESS -->
+  <!-- ──────────────────────────────────── -->
+  <div class="slide s-dark" data-slide="1">
+    <div class="section-tag"><span class="num">01</span> Understanding Your Business</div>
+    <h2 class="slide-heading light">The <em>Opportunity</em></h2>
+    <div class="two-col">
+      <div>
+        <table class="info-table">
+          <tr><td>Company</td><td>Outright Solutions Pvt Ltd (DBA Crescentek)</td></tr>
+          <tr><td>Team Size</td><td>~150 people · full-service delivery capacity</td></tr>
+          <tr><td>Services</td><td>Web Design & Dev, Mobile Apps, Digital Marketing, Staff Augmentation</td></tr>
+          <tr><td>Target Markets</td><td>UK, Europe, US, Canada, Dubai, APAC, Africa (not India)</td></tr>
+          <tr><td>Target Clients</td><td>Small web agencies (1–5 people) + founders building digital products</td></tr>
+          <tr><td>Previous System</td><td>In-person travel to US/Canada · currently disrupted</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="stat-pills">
+          <div class="stat-pill">
+            <span class="stat-pill-n">£15</span>
+            <span class="stat-pill-l">Per hour (vs £30+ market)</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-pill-n">48h</span>
+            <span class="stat-pill-l">Full-stack dev placed</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-pill-n">15–25</span>
+            <span class="stat-pill-l">Booked calls / month goal</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-pill-n">50%</span>
+            <span class="stat-pill-l">Below UK/EU market rates</span>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem; padding: 1rem 1.2rem; background: rgba(212,184,150,0.08); border: 1px solid rgba(212,184,150,0.18); border-radius: 4px;">
+          <p style="font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--nude-dark); margin-bottom:0.5rem;">Key USPs</p>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:0.4rem;">
+            <li style="font-size:12px; font-weight:300; color:rgba(250,250,248,0.7); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--nude-mid);">→</span> Price: ~50% below UK/EU market rates</li>
+            <li style="font-size:12px; font-weight:300; color:rgba(250,250,248,0.7); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--nude-mid);">→</span> Speed: full-stack developer placed within 48 hours</li>
+            <li style="font-size:12px; font-weight:300; color:rgba(250,250,248,0.7); padding-left:1rem; position:relative;"><span style="position:absolute;left:0;color:var(--nude-mid);">→</span> Versatility: WordPress, Magento, Shopify, React & full-stack</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────── -->
+  <!-- SLIDE 3: ICP                         -->
+  <!-- ──────────────────────────────────── -->
+  <div class="slide s-dark" data-slide="2">
+    <div class="section-tag"><span class="num">02</span> Ideal Customer Profile</div>
+    <h2 class="slide-heading light">Who We're <em>Targeting</em></h2>
+    <div class="icp-grid">
+      <div class="icp-card primary">
+        <span class="icp-badge p">Primary</span>
+        <p class="icp-title">Small Web Agencies</p>
+        <ul class="icp-list">
+          <li>1–5 person agency in UK, EU, US, Canada or Dubai</li>
+          <li>Overwhelmed with client demand, needs white-label dev capacity</li>
+          <li>Getting briefs outside their core tech stack</li>
+          <li>Struggling to hire fast or affordably</li>
+        </ul>
+      </div>
+      <div class="icp-card secondary">
+        <span class="icp-badge s">Secondary</span>
+        <p class="icp-title">Founders & Individuals</p>
+        <ul class="icp-list">
+          <li>Founders building apps, platforms or e-commerce stores</li>
+          <li>Burned by expensive or unreliable local developers</li>
+          <li>Active on LinkedIn, Reddit, startup communities</li>
+          <li>Based in UK, EU, US, Canada, Dubai or APAC</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem; display:flex; gap:1rem; flex-wrap:wrap;">
+      <div style="padding:0.5rem 1rem; background:rgba(212,184,150,0.08); border:1px solid rgba(212,184,150,0.15); border-radius:3px; font-size:11px; color:rgba(250,250,248,0.6); font-weight:300;">LinkedIn</div>
+      <div style="padding:0.5rem 1rem; background:rgba(212,184,150,0.08); border:1px solid rgba(212,184,150,0.15); border-radius:3px; font-size:11px; color:rgba(250,250,248,0.6); font-weight:300;">Reddit · r/webdev · r/forhire · r/startups</div>
+      <div style="padding:0.5rem 1rem; background:rgba(212,184,150,0.08); border:1px solid rgba(212,184,150,0.15); border-radius:3px; font-size:11px; color:rgba(250,250,248,0.6); font-weight:300;">Clutch · UpCity · Agency Directories</div>
+      <div style="padding:0.5rem 1rem; background:rgba(212,184,150,0.08); border:1px solid rgba(212,184,150,0.15); border-radius:3px; font-size:11px; color:rgba(250,250,248,0.6); font-weight:300;">Discord · Startup Communities</div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────── -->
+  <!-- SLIDE 4: APPROACH                    -->
+  <!-- ──────────────────────────────────── -->
+  <div class="slide s-dark" data-slide="3">
+    <div class="section-tag"><span class="num">03</span> My Approach</div>
+    <h2 class="slide-heading light" style="margin-bottom:1.2rem;">Signal-Based <em>Outreach</em></h2>
+    <div class="approach-tabs" id="tabs">
+      <button class="tab-btn active" data-tab="channels">Channels</button>
+      <button class="tab-btn" data-tab="stack">Research Stack</button>
+      <button class="tab-btn" data-tab="f2f">F2F Protocol</button>
+    </div>
+    <div class="tab-panel active" id="tab-channels">
+      <div class="channel-grid">
+        <div class="channel-card">
+          <p class="channel-icon">LI</p>
+          <p class="channel-name">LinkedIn</p>
+          <p class="channel-desc">Identify agency owners and founders via job posts, connection growth signals, and profile activity</p>
+        </div>
+        <div class="channel-card">
+          <p class="channel-icon">RD</p>
+          <p class="channel-name">Reddit & Discord</p>
+          <p class="channel-desc">Monitor r/webdev, r/forhire, r/startups where founders openly share dev needs</p>
+        </div>
+        <div class="channel-card">
+          <p class="channel-icon">IP</p>
+          <p class="channel-name">Industry Platforms</p>
+          <p class="channel-desc">Scan Clutch, UpCity, and niche agency directories for qualifying agencies</p>
+        </div>
+        <div class="channel-card">
+          <p class="channel-icon">EM</p>
+          <p class="channel-name">Email Outreach</p>
+          <p class="channel-desc">Enrich contacts and send personalised outreach that speaks directly to their pain points</p>
+        </div>
+      </div>
+      <p style="font-size:11px; font-weight:300; color:rgba(250,250,248,0.4); margin-top:0.8rem; font-style:italic;">By monitoring real-time triggers (job posts, Reddit 'for hire' threads, LinkedIn activity), I identify leads who need a developer right now, not 'someday'.</p>
+    </div>
+    <div class="tab-panel" id="tab-stack">
+      <p style="font-size:12px; font-weight:300; color:rgba(250,250,248,0.55); margin-bottom:1rem; line-height:1.5;">All tools and infrastructure costs are covered by me. You do not need to purchase anything.</p>
+      <div class="tools-list">
+        <span class="tool-tag">Claude AI</span>
+        <span class="tool-tag">Perplexity</span>
+        <span class="tool-tag">Clay</span>
+        <span class="tool-tag">Apollo.ai</span>
+        <span class="tool-tag">Hunter.io</span>
+        <span class="tool-tag">LinkedIn</span>
+      </div>
+      <div style="margin-top:1.2rem; display:flex; flex-direction:column; gap:0.5rem;">
+        <div style="display:flex; gap:0.8rem; align-items:flex-start; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+          <span style="font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--nude-dark); min-width:100px; padding-top:1px;">ICP Research</span>
+          <span style="font-size:12px; font-weight:300; color:rgba(250,250,248,0.6);">Claude AI + Perplexity — pain point mapping and messaging research</span>
+        </div>
+        <div style="display:flex; gap:0.8rem; align-items:flex-start; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+          <span style="font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--nude-dark); min-width:100px; padding-top:1px;">Enrichment</span>
+          <span style="font-size:12px; font-weight:300; color:rgba(250,250,248,0.6);">Clay + Apollo.ai — contact enrichment and data validation</span>
+        </div>
+        <div style="display:flex; gap:0.8rem; align-items:flex-start; padding:0.6rem 0;">
+          <span style="font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--nude-dark); min-width:100px; padding-top:1px;">Email Discovery</span>
+          <span style="font-size:12px; font-weight:300; color:rgba(250,250,248,0.6);">Hunter.io — email discovery and verification</span>
+        </div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab-f2f">
+      <div class="f2f-block">
+        <p class="f2f-title">The F2F (Founder-to-Founder) Outreach Protocol</p>
+        <div class="f2f-points">
+          <div class="f2f-point">
+            <span class="f2f-label">Peer-to-Peer Trust</span>
+            <span class="f2f-text">Your target clients (1–5 person agencies) are more likely to respond to a fellow founder than a sales pitch from an unknown specialist.</span>
+          </div>
+          <div class="f2f-point">
+            <span class="f2f-label">Frictionless Booking</span>
+            <span class="f2f-text">When a prospect receives a message from the person whose calendar they're clicking into, it ensures higher "show-up" rates on discovery calls.</span>
+          </div>
+          <div class="f2f-point">
+            <span class="f2f-label">Network Equity</span>
+            <span class="f2f-text">Every connection made during this pilot remains in your personal network, building long-term brand authority in the UK, US, and EU.</span>
+          </div>
+          <div class="f2f-point">
+            <span class="f2f-label">My Role</span>
+            <span class="f2f-text">I handle all research and ghostwrite personalised messages in your brand voice. You only show up for the calls I place on your calendar.</span>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:11px; font-weight:300; color:rgba(250,250,248,0.4); margin-top:0.75rem; font-style:italic;">If outreach via your profile does not work for you, we can discuss alternatives.</p>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────── -->
+  <!-- SLIDE 5: PRICING                     -->
+  <!-- ──────────────────────────────────── -->
+  <div class="slide s-nude" data-slide="4">
+    <div class="section-tag section-tag-dark"><span class="num">04</span> Pricing Options</div>
+    <h2 class="slide-heading dark">Two <em>Engagement</em> Models</h2>
+    <div class="pricing-grid">
+      <div class="pricing-panel a">
+        <p class="pricing-option-label a">Option A · Recommended</p>
+        <p class="pricing-option-title a">Booked Calls<br>Full Service</p>
+        <div class="price-rows">
+          <div class="price-row a">
+            <div>
+              <p class="price-row-label a">Per Booked Call</p>
+              <p class="price-row-note">Ongoing · Prospect shows up ready to talk</p>
+            </div>
+            <span class="price-row-amount a">£80</span>
+          </div>
+          <div class="price-row a">
+            <div>
+              <p class="price-row-label a">Pilot — 15 Calls</p>
+              <p class="price-row-note">30 days · Review at end of month</p>
+            </div>
+            <span class="price-row-amount a">£1,100</span>
+          </div>
+          <div class="price-row a featured">
+            <div>
+              <p class="price-row-label a">Pilot — 20 Calls</p>
+              <p class="price-row-note">30 days · Includes end-of-month strategy review</p>
+            </div>
+            <span class="price-row-amount a">£1,400</span>
+          </div>
+        </div>
+        <p style="font-size:10px; font-weight:300; color:rgba(250,250,248,0.4); line-height:1.4;">You share your Calendly link. Qualified prospects book directly into your calendar — no list sorting, no chasing.</p>
+      </div>
+      <div class="pricing-panel b">
+        <p class="pricing-option-label b">Option B</p>
+        <p class="pricing-option-title b">Curated Lead List<br>You Handle Outreach</p>
+        <div class="price-rows">
+          <div class="price-row b">
+            <div>
+              <p class="price-row-label b">Starter List · 50 contacts</p>
+              <p class="price-row-note b" style="color:var(--gray-400);">7 days · Verified emails + LinkedIn URLs + pain point notes</p>
+            </div>
+            <span class="price-row-amount b">£250</span>
+          </div>
+          <div class="price-row b">
+            <div>
+              <p class="price-row-label b">Growth List · 100 contacts</p>
+              <p class="price-row-note b" style="color:var(--gray-400);">7 days · Best for testing multiple markets simultaneously</p>
+            </div>
+            <span class="price-row-amount b">£420</span>
+          </div>
+          <div class="price-row b featured">
+            <div>
+              <p class="price-row-label b">Premium List · 200 contacts</p>
+              <p class="price-row-note b" style="color:var(--gray-400);">10 days · Full ICP mapping + enriched data + message hooks</p>
+            </div>
+            <span class="price-row-amount b">£750</span>
+          </div>
+        </div>
+        <p style="font-size:10px; font-weight:300; color:var(--gray-400); line-height:1.4;">Deliverable: Name, Company, Email, LinkedIn, Location, Pain Point Signal in a clean enriched spreadsheet.</p>
+      </div>
+      <div class="guarantee-strip" style="background:rgba(13,13,13,0.07); border:1px solid rgba(140,110,82,0.25);">
+        <div class="guarantee-icon" style="background:rgba(140,110,82,0.15);">
+          <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5" stroke="var(--nude-deep)"><path d="M8 2l1.5 3.5L13 6l-2.5 2.5.5 3.5L8 10.5l-3 1.5.5-3.5L3 6l3.5-.5L8 2z"/></svg>
+        </div>
+        <p class="guarantee-text" style="color:var(--gray-600);"><strong style="color:var(--nude-deep);">Performance Guarantee:</strong> If we do not hit at least 75% of the booked call target during the pilot, I will continue outreach for an additional 14 days at no extra service cost.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────── -->
+  <!-- SLIDE 6: TIMELINE                    -->
+  <!-- ──────────────────────────────────── -->
+  <div class="slide s-dark" data-slide="5">
+    <div class="section-tag"><span class="num">05</span> Pilot Timeline</div>
+    <h2 class="slide-heading light">30-Day <em>Plan</em></h2>
+    <div class="two-col">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot filled"></div>
+          <p class="timeline-day">Day 1–4</p>
+          <p class="timeline-event">Research & List Build</p>
+          <p class="timeline-detail">ICP refinement, signal hunting, contact enrichment and verification. If Option B: list delivered by Day 7.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot filled"></div>
+          <p class="timeline-day">Day 5</p>
+          <p class="timeline-event">Outreach Launched</p>
+          <p class="timeline-detail">Multi-channel sequences active on LinkedIn and email. Calendar link integrated (Option A).</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <p class="timeline-day">Day 14+</p>
+          <p class="timeline-event">Calls Rolling In</p>
+          <p class="timeline-detail">Ongoing optimisation based on response rates. Strategy adjustments made in real time.</p>
+        </div>
+        <div class="timeline-item" style="padding-bottom:0;">
+          <div class="timeline-dot"></div>
+          <p class="timeline-day">Day 30</p>
+          <p class="timeline-event">End-of-Month Review</p>
+          <p class="timeline-detail">Assess conversion quality, optimise strategy for the 20-call stretch goal in following months.</p>
+        </div>
+      </div>
+      <div>
+        <div class="timeline-goals">
+          <p class="timeline-goals-title">Pilot Performance Targets</p>
+          <div class="goal-row">
+            <span class="goal-label">Floor target (pilot)</span>
+            <span class="goal-val">15 calls</span>
+          </div>
+          <div class="goal-row">
+            <span class="goal-label">Stretch goal (ongoing)</span>
+            <span class="goal-val">20 calls</span>
+          </div>
+          <div class="goal-row">
+            <span class="goal-label">Long-term monthly target</span>
+            <span class="goal-val">15–25 calls</span>
+          </div>
+          <div class="goal-row">
+            <span class="goal-label">Guarantee threshold</span>
+            <span class="goal-val">75%</span>
+          </div>
+        </div>
+        <div style="margin-top:1.2rem; background:rgba(250,250,248,0.03); border:1px solid rgba(250,250,248,0.07); border-radius:4px; padding:1rem 1.2rem;">
+          <p style="font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--nude-dark); margin-bottom:0.5rem;">Pilot Focus</p>
+          <p style="font-size:12px; font-weight:300; color:rgba(250,250,248,0.6); line-height:1.5;">Quality over volume. During the pilot, every lead will perfectly match your ICP before being passed through to a discovery call.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────── -->
+  <!-- SLIDE 7: WHY WORK WITH ME            -->
+  <!-- ──────────────────────────────────── -->
+  <div class="slide s-dark" data-slide="6">
+    <div class="section-tag"><span class="num">06</span> Why Work With Me</div>
+    <h2 class="slide-heading light">What Sets This <em>Apart</em></h2>
+    <div class="reasons-grid">
+      <div class="reason-card">
+        <p class="reason-num">01</p>
+        <p class="reason-text"><strong>Hands-on niche experience.</strong> B2B lead generation for IT and web development agencies — not a generalist, but a specialist in your space.</p>
+      </div>
+      <div class="reason-card">
+        <p class="reason-num">02</p>
+        <p class="reason-text"><strong>Proven results in your niche.</strong> Closed deals over $7,500 — including a streaming platform build where I identified pain from bad developers and positioned the agency as the fix.</p>
+      </div>
+      <div class="reason-card">
+        <p class="reason-num">03</p>
+        <p class="reason-text"><strong>Zero learning curve.</strong> I use Claude, Perplexity, Clay, Apollo, and Hunter daily — the same stack you need for this. Day one is Day one of results.</p>
+      </div>
+      <div class="reason-card">
+        <p class="reason-num">04</p>
+        <p class="reason-text"><strong>Signal-first methodology.</strong> I don't just scrape names. I find people actively signalling they need what you offer right now.</p>
+      </div>
+      <div class="reason-card">
+        <p class="reason-num">05</p>
+        <p class="reason-text"><strong>You focus on closing.</strong> I handle everything upstream — research, enrichment, messaging, and delivery. You show up for the call.</p>
+      </div>
+      <div class="reason-card">
+        <p class="reason-num">06</p>
+        <p class="reason-text"><strong>No tool overhead for you.</strong> All infrastructure costs are covered on my end. There is nothing for you to set up or subscribe to.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────── -->
+  <!-- SLIDE 8: NEXT STEPS                  -->
+  <!-- ──────────────────────────────────── -->
+  <div class="slide s-dark" data-slide="7">
+    <div class="section-tag"><span class="num">07</span> Next Steps</div>
+    <h2 class="slide-heading light">Ready to <em>Begin?</em></h2>
+    <div class="two-col-eq">
+      <div>
+        <div class="steps-list">
+          <div class="step-row">
+            <span class="step-num">1</span>
+            <div class="step-content">
+              <p class="step-title">Confirm Option A or B</p>
+              <p class="step-detail">Let me know your preferred engagement model by Monday</p>
+            </div>
+          </div>
+          <div class="step-row">
+            <span class="step-num">2</span>
+            <div class="step-content">
+              <p class="step-title">Onboarding Sync</p>
+              <p class="step-detail">15-minute call to link your Calendly and align on brand voice</p>
+            </div>
+          </div>
+          <div class="step-row">
+            <span class="step-num">3</span>
+            <div class="step-content">
+              <p class="step-title">Go-Live</p>
+              <p class="step-detail">Research starts immediately. Outreach launches Day 5.</p>
+            </div>
+          </div>
+        </div>
+        <div class="deadline-bar">
+          <span class="deadline-label">Decision deadline</span>
+          <span class="deadline-val">One week from the date of this proposal</span>
+        </div>
+      </div>
+      <div>
+        <div style="background:rgba(212,184,150,0.08); border:1px solid rgba(212,184,150,0.2); border-radius:4px; padding:1.5rem; height:100%;">
+          <p style="font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--nude-dark); margin-bottom:1rem;">Quick Reference</p>
+          <div style="display:flex; flex-direction:column; gap:0.8rem;">
+            <div style="display:flex; justify-content:space-between; align-items:baseline; padding-bottom:0.6rem; border-bottom:1px solid rgba(212,184,150,0.1);">
+              <span style="font-size:12px; font-weight:300; color:rgba(250,250,248,0.6);">Option A · 15-call pilot</span>
+              <span style="font-family:'Cormorant Garamond', serif; font-size:1.2rem; color:var(--nude-mid);">£1,100</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:baseline; padding-bottom:0.6rem; border-bottom:1px solid rgba(212,184,150,0.1);">
+              <span style="font-size:12px; font-weight:300; color:rgba(250,250,248,0.6);">Option A · 20-call pilot</span>
+              <span style="font-family:'Cormorant Garamond', serif; font-size:1.2rem; color:var(--nude-mid);">£1,400</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:baseline; padding-bottom:0.6rem; border-bottom:1px solid rgba(212,184,150,0.1);">
+              <span style="font-size:12px; font-weight:300; color:rgba(250,250,248,0.6);">Option B · Starter list</span>
+              <span style="font-family:'Cormorant Garamond', serif; font-size:1.2rem; color:var(--nude-mid);">£250</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:baseline;">
+              <span style="font-size:12px; font-weight:300; color:rgba(250,250,248,0.6);">Performance guarantee</span>
+              <span style="font-size:11px; font-weight:400; color:var(--nude-dark);">75% · +14 days free</span>
+            </div>
+          </div>
+          <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid rgba(212,184,150,0.15);">
+            <p style="font-size:10px; font-weight:300; color:rgba(250,250,248,0.35); line-height:1.5; font-style:italic;">Ijeoma Nneji · Lead Generation Specialist<br>Prepared exclusively for Outright Solutions / Crescentek · April 2026</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav-bar">
+  <button class="nav-btn" id="prev" aria-label="Previous slide">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 12L6 8l4-4"/></svg>
+  </button>
+  <div class="dots" id="dots"></div>
+  <span class="slide-counter" id="counter">1 / 8</span>
+  <button class="nav-btn" id="next" aria-label="Next slide">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4l4 4-4 4"/></svg>
+  </button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const dotsEl = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function updateUI() {
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+    counter.textContent = (current + 1) + ' / ' + total;
+  }
+
+  function goTo(n) {
+    if (n === current) return;
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit');
+    const prev = current;
+    setTimeout(() => slides[prev].classList.remove('exit'), 400);
+    current = ((n % total) + total) % total;
+    slides[current].classList.add('active');
+    updateUI();
+  }
+
+  document.getElementById('prev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('next').addEventListener('click', () => goTo(current + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goTo(current - 1);
+  });
+
+  // Tab switching on approach slide
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  updateUI();
+</script>
+</body>
+</html>
